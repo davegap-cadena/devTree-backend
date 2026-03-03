@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:16-alpine3.22
+    container_name: postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: mi_base_datos
+    ports:
+      - "5432:5432"
+    volumes:
+      - volumen-postgres:/var/lib/postgresql/data
+    networks:
+      - red-postgres
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "8080:80"
+    volumes:
+      - volumen-pgadmin:/var/lib/pgadmin
+    networks:
+      - red-postgres
+    depends_on:
+      - postgres-db
+
+volumes:
+  volumen-postgres:
+    name: volumen-postgres
+  volumen-pgadmin:
+    name: volumen-pgadmin
+
+networks:
+  red-postgres:
+    name: red-postgres
+    driver: bridge
