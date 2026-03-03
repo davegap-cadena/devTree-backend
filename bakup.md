@@ -29,3 +29,27 @@ docker run --rm -v volumen-pgadmin:/data -v ${PWD}:/backup alpine tar xzf /backu
 
 # 3. Levantar los contenedores
 docker-compose up -d
+
+
+Comandos de exportar (en cualquier PC donde estés trabajando)
+bash# Exportar datos actualizados
+docker run --rm -v volumen-postgres:/data -v ${PWD}:/backup alpine tar czf /backup/postgres-backup.tar.gz -C /data .
+Comandos de restaurar (en el PC destino)
+bash# Detener contenedores primero
+docker-compose down
+
+# Restaurar volumen
+docker run --rm -v volumen-postgres:/data -v ${PWD}:/backup alpine tar xzf /backup/postgres-backup.tar.gz -C /data
+
+# Volver a levantar
+docker-compose up -d
+```
+
+---
+
+## Lo único que necesitas mover entre PCs
+```
+📁 carpeta-proyecto/
+  ├── docker-compose.yml       ← configuración
+  ├── postgres-backup.tar.gz   ← tus datos
+  └── pgadmin-backup.tar.gz    ← config pgadmin (opcional)
